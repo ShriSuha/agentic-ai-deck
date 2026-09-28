@@ -1,0 +1,6 @@
+# Values that are the same for everyone who runs this project.
+# Secrets and machine-specific settings stay in .env.
+
+search:
+  # How many matching model cards search_cards returns.
+  max_hits: 8
