@@ -36,16 +36,20 @@ def _check_ollama() -> None:
 def main() -> None:
     load_dotenv()
     provider = os.getenv("LLM_PROVIDER", "ollama").strip().lower()
-    topic = sys.argv[1] if len(sys.argv) > 1 else os.getenv("TOPIC", "local LLM agents with CrewAI")
+    question = (
+        sys.argv[1]
+        if len(sys.argv) > 1
+        else os.getenv("QUESTION", "What license does bert-base-uncased use?")
+    )
 
     if provider == "ollama":
         _check_ollama()
     else:
         print(f"Using OpenAI-compatible model: {os.getenv('OPENAI_MODEL_NAME', 'local-model')}")
 
-    print(f"Topic: {topic}\n")
-    result = StarterCrew().crew().kickoff(inputs={"topic": topic})
-    print("\n----- Brief -----\n")
+    print(f"Question: {question}\n")
+    result = StarterCrew().crew().kickoff(inputs={"question": question})
+    print("\n----- Answer -----\n")
     print(result)
 
 

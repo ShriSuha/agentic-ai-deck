@@ -1,16 +1,12 @@
-research_task:
+answer_question:
   description: >
-    Research {topic}. List the main facts, the open questions, and why
-    each one matters to someone getting started.
+    Answer this question: {question}
+    Search the model cards, then open the matching card and read it.
+    Answer in a few sentences, using only what that file says.
+    Name the file you used.
+    If the cards do not contain the answer, say so. Do not guess.
   expected_output: >
-    Bullet notes with facts, uncertainties, and sources when you know them.
-  agent: researcher
-
-write_task:
-  description: >
-    Using the research notes, write a brief on {topic} for a new teammate.
-  expected_output: >
-    A short brief with a summary, key points, and suggested next steps.
-  agent: writer
-  context:
-    - research_task
+    A short answer, the filename of the card you used, or a clear statement
+    that the collection does not contain the answer.
+  agent: card_guide
+  guardrail_max_retries: 3

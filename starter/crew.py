@@ -3,13 +3,15 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, llm, task, tool
 
+from starter.guardrail.answer_check import check_answer
 from starter.llm import local_llm
-from starter.tools.example_tool import WordCountTool
+from starter.tools.read_card import ReadCardTool
+from starter.tools.search_cards import SearchCardsTool
 
 
 @CrewBase
 class StarterCrew:
-    """Two-agent crew: research a topic, then write a short brief."""
+    """One agent: answer a question from the model cards."""
 
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
@@ -19,24 +21,23 @@ class StarterCrew:
         return local_llm()
 
     @tool
-    def word_count(self):
-        return WordCountTool()
+    def search_cards(self):
+        return SearchCardsTool()
+
+    @tool
+    def read_card(self):
+        return ReadCardTool()
 
     @agent
-    def researcher(self) -> Agent:
-        return Agent(config=self.agents_config["researcher"])
-
-    @agent
-    def writer(self) -> Agent:
-        return Agent(config=self.agents_config["writer"])
+    def card_guide(self) -> Agent:
+        return Agent(config=self.agents_config["card_guide"])
 
     @task
-    def research_task(self) -> Task:
-        return Task(config=self.tasks_config["research_task"])
-
-    @task
-    def write_task(self) -> Task:
-        return Task(config=self.tasks_config["write_task"])
+    def answer_question(self) -> Task:
+        return Task(
+            config=self.tasks_config["answer_question"],
+            guardrail=check_answer,
+        )
 
     @crew
     def crew(self) -> Crew:
@@ -44,5 +45,6 @@ class StarterCrew:
             agents=self.agents,
             tasks=self.tasks,
             process=Process.sequential,
+            cache=True,
             verbose=True,
         )
