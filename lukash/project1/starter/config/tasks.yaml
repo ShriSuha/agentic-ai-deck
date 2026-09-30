@@ -1,0 +1,47 @@
+research_vector:
+  description: >
+    Independently research the topic: {topic}. Use the vector_search tool with focused semantic queries. Do not use or rely on other researchers' results.
+  expected_output: >
+    Model card IDs returned by vector search, with the supporting snippets returned by the tool.
+  agent: vector_searcher
+  context: []
+  async_execution: true
+
+research_keywords:
+  description: >
+    Independently research the topic: {topic}. Use the keyword_search tool with focused, individual keywords. Do not use or rely on other researchers' results.
+  expected_output: >
+    Model card IDs returned by keyword search, one per line.
+  agent: keyword_searcher
+  context: []
+  async_execution: true
+
+research_titles:
+  description: >
+    Independently research the topic: {topic}. Use the get_all_entries tool to inspect available model card IDs and titles, then report relevant IDs. Do not use or rely on other researchers' results.
+  expected_output: >
+    Relevant model card IDs found in the tool output.
+  agent: headline_hunter
+  context: []
+  async_execution: true
+
+edit_task:
+  description: >
+    Examine the independent recommendations for: {topic}.
+    Use get_model_details to verify relevant model cards and summarize their database facts in bullet points.
+  expected_output: >
+    The most important verified facts for each relevant model card, including its model ID.
+  agent: editor
+  context:
+    - research_titles
+    - research_keywords
+    - research_vector
+
+write_task:
+  description: >
+    Using prior work by your colleagues, write a summary regarding: '{topic}'.
+  expected_output: >
+    A dense summary with details and the most important information gathered.
+  agent: writer
+  context:
+    - edit_task

@@ -9,3 +9,6 @@ __pycache__/
 .pytest_cache/
 dist/
 build/
+lukash/project1/assets/
+lukash/project3/.venv/
+lukash/project3/.env
